@@ -1,0 +1,27 @@
+# Fly.io deploy config.
+# İlk kurulum:
+#   flyctl launch --no-deploy --copy-config --name <app-adi>
+#   flyctl secrets set TELEGRAM_BOT_TOKEN=... ANTHROPIC_API_KEY=...
+#   flyctl volumes create cgty_data --size 1 --region <region>
+#   flyctl deploy
+
+app = "cgty-bot"
+primary_region = "fra"
+
+[build]
+
+[env]
+  ROUTINES_FILE = "/data/routines.json"
+
+[[mounts]]
+  source = "cgty_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+  cpus = 1
+
+# Polling tabanlı bot, HTTP portu yok.
+[processes]
+  app = "python -u bot.py"
